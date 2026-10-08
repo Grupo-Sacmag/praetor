@@ -1,0 +1,19 @@
+services:
+  portal:
+    build: .
+    restart: unless-stopped
+    ports:
+      - "3000:3000"
+    env_file: .env
+    environment:
+      # Rutas DENTRO del contenedor; deben apuntar al volumen compartido con la API de Actualitodo.
+      APPS_DIR: /data/apps
+      TARIFAS_DIR: /data/envArch
+    volumes:
+      # Reemplaza por los volúmenes/carpetas reales que usa la API de Actualitodo.
+      - actualitodo_apps:/data/apps
+      - actualitodo_envarch:/data/envArch
+
+volumes:
+  actualitodo_apps:
+  actualitodo_envarch:
