@@ -3,7 +3,7 @@ services:
     build: .
     restart: unless-stopped
     ports:
-      - "${PORT:-7892}:3000"
+      - "${PORT:-7892}:${PORT:-7892}"
     env_file: .env
     extra_hosts:
       - "host.docker.internal:host-gateway"
