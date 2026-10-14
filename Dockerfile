@@ -15,6 +15,7 @@ ENV NODE_ENV=production PORT=3000 HOSTNAME=0.0.0.0
 COPY --from=build /app/.next/standalone ./
 COPY --from=build /app/.next/static ./.next/static
 # Crear admins dentro del contenedor: docker compose exec portal node scripts/create-admin.mjs ...
+COPY --from=deps /app/node_modules/bcryptjs ./node_modules/bcryptjs
 COPY --from=build /app/scripts ./scripts
 RUN mkdir -p /data/apps /data/envArch && chown -R node:node /data /app
 USER node
