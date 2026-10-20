@@ -1,8 +1,10 @@
 import { redirect } from "next/navigation";
 import LogoutButton from "@/components/LogoutButton";
 import RefreshListener from "@/components/RefreshListener";
+import TarifasIndicesUpload from "@/components/TarifasIndicesUpload";
+import TarifasIndicesViewer, { type StoredFile } from "@/components/TarifasIndicesViewer";
 import UploadForm from "@/components/UploadForm";
-import { ALL_EXT, APP_NAMES, APPS, INDICE_EXT, TARIFA_EXT, env } from "@/lib/config";
+import { APP_NAMES, APPS, classifyFile, env } from "@/lib/config";
 import { getDb } from "@/lib/mongo";
 import { getSession } from "@/lib/session";
 
@@ -19,6 +21,18 @@ export default async function Home() {
   const rows = await db.collection(env.versionsCol).find({}, { projection: { Nombre: 1, Version: 1, exe: 1, UltModif: 1 } }).toArray();
   const byName = new Map(rows.map((r) => [r.Nombre as string, r]));
 
+  // Obtener archivos de tarifas e índices para el visualizador
+  const fileDocs = await db.collection(env.filesCol).find({}).sort({ uploadTime: -1 }).toArray();
+  const initialFiles: StoredFile[] = fileDocs.map((d) => ({
+    fileName: d.fileName as string,
+    filePath: (d.filePath as string) ?? "",
+    fileSize: typeof d.fileSize?.toNumber === "function" ? d.fileSize.toNumber() : Number(d.fileSize ?? 0),
+    contentType: d.contentType as string,
+    userId: d.userId as string,
+    uploadTime: d.uploadTime ? new Date(d.uploadTime).toISOString() : undefined,
+    tipo: (d.tipo as "tarifa" | "indice") || classifyFile(d.fileName as string),
+  }));
+
   return (
     <main className="shell">
       <RefreshListener />
@@ -31,7 +45,7 @@ export default async function Home() {
         <section className="panel">
           <header>
             <h2>Aplicación (.exe)</h2>
-            <p>El archivo se guarda con el nombre exacto que espera Actualitodo.</p>
+            <p>El archivo se guarda en la carpeta correspondiente dentro de <code>archivosACT/aplicaciones</code>.</p>
           </header>
           <UploadForm action="/api/upload/app" submitLabel="Publicar versión">
             <label>Aplicación
@@ -52,20 +66,18 @@ export default async function Home() {
           <header>
             <h2>Tarifas e índices</h2>
             <p>
-              Tarifas: {TARIFA_EXT.map((e) => "." + e).join(" ")} · Índices: {INDICE_EXT.map((e) => "." + e).join(" ")}.
-              Si el archivo ya existe, se reemplaza.
+              Sube por archivos sueltos o por carpeta completa. El sistema clasifica automáticamente cada archivo y lo guarda físicamente en <code>archivosACT/tarifas</code> o <code>archivosACT/INDICES</code>.
             </p>
           </header>
-          <UploadForm action="/api/upload/tarifa" submitLabel="Publicar archivos">
-            <label>Archivos<small>Puedes elegir varios a la vez</small>
-              <input type="file" name="files" multiple accept={ALL_EXT.map((e) => "." + e).join(",")} required />
-            </label>
-          </UploadForm>
+          <TarifasIndicesUpload />
         </section>
       </div>
 
+      {/* Visualizador de Tarifas e Índices en Servidor */}
+      <TarifasIndicesViewer initialFiles={initialFiles} />
+
       <section className="panel versions">
-        <header><h2>Versiones publicadas</h2></header>
+        <header><h2>Versiones publicadas de aplicaciones</h2></header>
         <table>
           <thead><tr><th>Aplicación</th><th>Versión</th><th>Ejecutable</th><th>Última modificación</th></tr></thead>
           <tbody>

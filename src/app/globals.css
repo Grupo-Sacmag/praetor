@@ -60,8 +60,89 @@ th, td { text-align: left; padding: 8px 10px; border-bottom: 1px solid var(--lin
 th { font-weight: 600; color: var(--muted); }
 .versions { margin-top: 20px; overflow-x: auto; }
 
+/* --- Subida y Previsualización de Tarifas e Índices --- */
+.upload-container { display: grid; gap: 14px; }
+.dropzone {
+  border: 2px dashed #a5b4ba;
+  border-radius: 6px;
+  background: #f7faf9;
+  padding: 24px 16px;
+  text-align: center;
+  transition: all 0.2s ease;
+}
+.dropzone.dragover {
+  border-color: var(--accent);
+  background: #e9f5f3;
+  transform: scale(1.01);
+}
+.drop-actions { display: flex; align-items: center; justify-content: center; gap: 10px; flex-wrap: wrap; }
+.btn-select {
+  background: var(--surface);
+  color: var(--ink);
+  border: 1px solid #9fb3b8;
+  font-size: 0.88rem;
+  padding: 8px 14px;
+}
+.btn-select:hover:not(:disabled) { background: #eef3f3; }
+.or-text { font-size: 0.85rem; color: var(--muted); font-weight: 500; }
+.drop-hint { margin-top: 10px; font-size: 0.82rem; color: var(--muted); }
+
+.preview-box {
+  background: #fdfdfd;
+  border: 1px solid var(--line);
+  border-radius: 6px;
+  padding: 14px;
+  display: grid;
+  gap: 12px;
+}
+.preview-header { display: flex; align-items: center; justify-content: space-between; }
+.preview-header h4 { margin: 0; font-size: 0.95rem; font-weight: 650; }
+.btn-clear {
+  background: transparent;
+  color: var(--err);
+  border: none;
+  font-size: 0.82rem;
+  padding: 2px 6px;
+  cursor: pointer;
+  text-decoration: underline;
+}
+.preview-tabs { display: flex; gap: 8px; align-items: center; border-bottom: 1px solid var(--line); padding-bottom: 8px; }
+.tab-btn {
+  background: #edf1f2;
+  color: var(--ink);
+  border: 1px solid transparent;
+  border-radius: 4px;
+  padding: 6px 12px;
+  font-size: 0.85rem;
+}
+.tab-btn.active {
+  background: var(--accent);
+  color: var(--accent-ink);
+  font-weight: 600;
+}
+.tab-warning { font-size: 0.8rem; color: #b45309; background: #fef3c7; padding: 4px 8px; border-radius: 4px; }
+.preview-list { max-height: 160px; overflow-y: auto; background: var(--surface); border: 1px solid var(--line); border-radius: 4px; padding: 6px 10px; }
+.preview-list ul { list-style: none; margin: 0; padding: 0; display: grid; gap: 4px; }
+.preview-list li { display: flex; justify-content: space-between; font-size: 0.85rem; font-family: var(--mono); padding: 3px 0; border-bottom: 1px dashed #eee; }
+.empty-preview { margin: 0; font-size: 0.85rem; color: var(--muted); padding: 8px 4px; }
+.file-name { font-weight: 600; word-break: break-all; }
+.file-size { color: var(--muted); font-size: 0.8rem; margin-left: 8px; white-space: nowrap; }
+.btn-upload-all { width: 100%; margin-top: 4px; }
+
+/* --- Visualizador de Archivos en Servidor --- */
+.files-viewer-panel { margin-top: 24px; }
+.viewer-header { display: flex; justify-content: space-between; align-items: flex-start; gap: 16px; margin-bottom: 16px; flex-wrap: wrap; }
+.viewer-controls { min-width: 240px; }
+.search-input { width: 100%; padding: 8px 12px; border-radius: 4px; border: 1px solid var(--line); font-size: 0.88rem; }
+.viewer-tabs { display: flex; gap: 10px; margin-bottom: 12px; }
+.table-responsive { overflow-x: auto; }
+.empty-row { text-align: center; color: var(--muted); padding: 24px; font-style: italic; }
+.fw-600 { font-weight: 600; }
+.muted-text { color: var(--muted); font-size: 0.82rem; }
+
 .login { min-height: 100dvh; display: grid; place-items: center; padding: 20px; }
 .login .panel { width: min(380px, 100%); }
 .login h1 { margin-bottom: 4px; }
 .login .muted { margin-bottom: 18px; }
 @media (prefers-reduced-motion: reduce) { .progress > span { transition: none; } }
+

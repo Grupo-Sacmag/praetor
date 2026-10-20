@@ -8,9 +8,10 @@ services:
     extra_hosts:
       - "host.docker.internal:host-gateway"
     environment:
-      # Rutas DENTRO del contenedor; deben apuntar al volumen compartido con la API de Actualitodo.
-      APPS_DIR: /data/apps
-      TARIFAS_DIR: /data/envArch
+      # Rutas DENTRO del contenedor
+      APPS_DIR: /data/archivosACT/aplicaciones
+      TARIFAS_DIR: /data/archivosACT/tarifas
+      INDICES_DIR: /data/archivosACT/INDICES
     volumes:
-      - ${HOST_APPS_DIR:-/var/www/actualiTodo/version}:/data/apps
-      - ${HOST_TARIFAS_DIR:-/var/www/G.A.C/envArch/uploads}:/data/envArch
+      # Carpeta física unificada en /var/www/archivosACT
+      - ${HOST_ARCHIVOS_DIR:-/var/www/archivosACT}:/data/archivosACT
