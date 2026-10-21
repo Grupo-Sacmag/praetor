@@ -1,5 +1,5 @@
 import { NextResponse } from "next/server";
-import { classifyFile, env } from "@/lib/config";
+import { classifyFile, env, getHostFilePath } from "@/lib/config";
 import { getDb } from "@/lib/mongo";
 import { getSession } from "@/lib/session";
 
@@ -24,7 +24,7 @@ export async function GET() {
       const tipo = d.tipo || classifyFile(d.fileName as string);
       return {
         fileName: d.fileName,
-        filePath: d.filePath,
+        filePath: getHostFilePath(d.fileName as string, tipo),
         fileSize: typeof d.fileSize?.toNumber === "function" ? d.fileSize.toNumber() : Number(d.fileSize ?? 0),
         contentType: d.contentType,
         userId: d.userId,

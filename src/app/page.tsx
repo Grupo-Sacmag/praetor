@@ -4,7 +4,7 @@ import RefreshListener from "@/components/RefreshListener";
 import TarifasIndicesUpload from "@/components/TarifasIndicesUpload";
 import TarifasIndicesViewer, { type StoredFile } from "@/components/TarifasIndicesViewer";
 import UploadForm from "@/components/UploadForm";
-import { APP_NAMES, APPS, classifyFile, env } from "@/lib/config";
+import { APP_NAMES, APPS, classifyFile, env, getHostFilePath } from "@/lib/config";
 import { getDb } from "@/lib/mongo";
 import { getSession } from "@/lib/session";
 
@@ -23,15 +23,18 @@ export default async function Home() {
 
   // Obtener archivos de tarifas e índices para el visualizador
   const fileDocs = await db.collection(env.filesCol).find({}).sort({ uploadTime: -1 }).toArray();
-  const initialFiles: StoredFile[] = fileDocs.map((d) => ({
-    fileName: d.fileName as string,
-    filePath: (d.filePath as string) ?? "",
-    fileSize: typeof d.fileSize?.toNumber === "function" ? d.fileSize.toNumber() : Number(d.fileSize ?? 0),
-    contentType: d.contentType as string,
-    userId: d.userId as string,
-    uploadTime: d.uploadTime ? new Date(d.uploadTime).toISOString() : undefined,
-    tipo: (d.tipo as "tarifa" | "indice") || classifyFile(d.fileName as string),
-  }));
+  const initialFiles: StoredFile[] = fileDocs.map((d) => {
+    const tipo = (d.tipo as "tarifa" | "indice") || classifyFile(d.fileName as string);
+    return {
+      fileName: d.fileName as string,
+      filePath: getHostFilePath(d.fileName as string, tipo),
+      fileSize: typeof d.fileSize?.toNumber === "function" ? d.fileSize.toNumber() : Number(d.fileSize ?? 0),
+      contentType: d.contentType as string,
+      userId: d.userId as string,
+      uploadTime: d.uploadTime ? new Date(d.uploadTime).toISOString() : undefined,
+      tipo,
+    };
+  });
 
   return (
     <main className="shell">

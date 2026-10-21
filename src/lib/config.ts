@@ -65,3 +65,9 @@ export const env = {
   tarifasDbPath: process.env.TARIFAS_DB_PATH || "",
   cookieSecure: process.env.COOKIE_SECURE === "true",
 };
+
+export function getHostFilePath(fileName: string, tipo?: string): string {
+  const cat = tipo && tipo !== "desconocido" ? tipo : classifyFile(fileName);
+  const hostDir = cat === "tarifa" ? env.hostTarifasDir : env.hostIndicesDir;
+  return `${hostDir.replace(/\/+$/, "")}/${fileName}`;
+}
